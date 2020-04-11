@@ -92,7 +92,7 @@ func run() {
 			fram = 0
 		default:
 		}
-		time.Sleep(time.Millisecond * 70)
+		// time.Sleep(time.Millisecond * 70)
 	}
 }
 

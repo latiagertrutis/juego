@@ -20,8 +20,7 @@ type Range struct {
 }
 
 // The sprite iself, that means a single image, or animation
-// or whatever you want, it is declared pointing to the first
-// and last frame of the sprite inside the spritesheet (Frames).
+// It contains all the frames concerning to the sprite
 // It also have a matrix to hold it's current state.
 type Sprite struct {
 	// The position of the images for this sprite inside the spritesheet
