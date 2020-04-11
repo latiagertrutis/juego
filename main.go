@@ -1,33 +1,44 @@
+// ///////////////////////////////////////////////////////////////////
+// Filename: main.go
+// Description:
+// Author: Mateo Rodriguez Ripolles (teorodrip@posteo.net)
+// Maintainer:
+// Created: Sat Apr 11 16:46:58 2020 (+0200)
+// ///////////////////////////////////////////////////////////////////
+
 package main
 
 import (
-	"image"
-	_ "image/png"
-	"os"
+	"fmt"
+	"time"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
-	"time"
 )
 
-func loadPicture(path string) (pixel.Picture, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	img, _, err := image.Decode(file)
-	if err != nil {
-		return nil, err
-	}
-	return pixel.PictureDataFromImage(img), nil
-}
+// All Possible game states
+const (
+	StatMenu = iota
+	StatPlay
+)
+
+var (
+	// Variable holding current game state
+	GameStat int
+)
 
 func run() {
+	GameStat = StatMenu
+
+	err := GlobalDB.Init("./resources/data.db")
+	if err != nil {
+		panic(err)
+	}
+
 	cfg := pixelgl.WindowConfig{
 		Title:  "Cosa",
-		Bounds: pixel.R(0, 0, 1024, 768),
+		Bounds: GetMainMonitorResolution(),
 		VSync:  true,
 	}
 
@@ -36,32 +47,52 @@ func run() {
 		panic(err)
 	}
 
-	win.SetSmooth(true)
-
-	pic, err := loadPicture("./resources/cosa.png")
+	sh := Spritesheet{}
+	err = sh.Init(1)
 	if err != nil {
 		panic(err)
 	}
 
-	var frames []pixel.Rect
-	for x := pic.Bounds().Min.X; x < pic.Bounds().Max.X; x += 1000 {
-		frames = append(frames, pixel.R(x, 0, x+1000, 1000))
-	}
-
 	win.Clear(colornames.Firebrick)
 
-	mat := pixel.IM
 	i := 0
+	fram := 0
+	second := time.Tick(time.Second)
+	// last := time.Now()
+
+	mat1 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(70, -150)))
+	mat1 = mat1.Scaled(win.Bounds().Center(), 3)
+	mat2 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(30, -150)))
+	mat2 = mat2.Scaled(win.Bounds().Center(), 3)
+	mat3 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(-10, -150)))
+	mat3 = mat3.Scaled(win.Bounds().Center(), 3)
+	mat4 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(-50, -150)))
+	mat4 = mat4.Scaled(win.Bounds().Center(), 3)
+
 	for !win.Closed() {
+		sh.Batch.Clear()
+		sh.SetMatrix(0, mat1)
+		sh.WriteSprite(0, i)
+		sh.SetMatrix(1, mat2)
+		sh.WriteSprite(1, (i+8)%16)
+		sh.SetMatrix(0, mat3)
+		sh.WriteSprite(0, (i+4)%16)
+		sh.SetMatrix(1, mat4)
+		sh.WriteSprite(1, (i+10)%16)
+		i = (i + 1) % 16
+
 		win.Clear(colornames.Firebrick)
-
-		sprite := pixel.NewSprite(pic, frames[i])
-		mat := mat.Moved(win.Bounds().Center())
-		sprite.Draw(win, mat)
-		i = (i + 1) % len(frames)
-
-		time.Sleep(time.Millisecond * 25)
+		sh.Batch.Draw(win)
 		win.Update()
+
+		fram++
+		select {
+		case <-second:
+			win.SetTitle(fmt.Sprintf("%s | FPS: %d", cfg.Title, fram))
+			fram = 0
+		default:
+		}
+		time.Sleep(time.Millisecond * 70)
 	}
 }
 
