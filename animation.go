@@ -9,16 +9,16 @@
 package main
 
 import (
-	"github.com/faiface/pixel"
+	"time"
 )
-
-type AnimationFrame struct {
-	FramePos uint
-	Trans    pixel.Matrix
-}
 
 type Animation struct {
 	SpriteID        uint
 	Status          uint
-	AnimationFrames []AnimationFrame
+	LastTick        time.Time
+	AnimationFrames []uint
+}
+
+func (a *Animation) Init(spriteID uint) {
+
 }

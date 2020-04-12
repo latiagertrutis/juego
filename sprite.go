@@ -110,7 +110,7 @@ func (s *Sprite) DrawSprite(target pixel.Target, frame int) {
 }
 
 func (s *Sprite) UpdateMatrix(next pixel.Matrix) {
-	s.Mat = next // TODO try to use chain to add matrix
+	s.Mat = s.Mat.Chained(next)
 }
 
 func loadPicture(path string) (pixel.Picture, error) {

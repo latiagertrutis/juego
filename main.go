@@ -62,7 +62,8 @@ func run() {
 
 	T_Spr := sh.GetSprite(0)
 
-	T_Spr.UpdateMatrix(pixel.IM.Moved(win.Bounds().Center()))
+	T_Spr.UpdateMatrix(pixel.IM.Moved(pixel.V(100, 100)))
+	// T_Spr.UpdateMatrix(pixel.IM.Scaled(win.Bounds().Center(), 9))
 	// mat1 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(70, -150)))
 	// mat1 = mat1.Scaled(win.Bounds().Center(), 3)
 	// mat2 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(30, -150)))
@@ -71,8 +72,10 @@ func run() {
 	// mat3 = mat3.Scaled(win.Bounds().Center(), 3)
 	// mat4 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(-50, -150)))
 	// mat4 = mat4.Scaled(win.Bounds().Center(), 3)
-
+	// last := time.Now()
 	for !win.Closed() {
+		// dt := time.Since(last).Seconds()
+
 		sh.Batch.Clear()
 		T_Spr.DrawSprite(sh.Batch, i)
 		// sh.SetMatrix(1, mat2)
