@@ -30,7 +30,7 @@ type Sprite struct {
 	Mat    pixel.Matrix
 }
 
-// The spritesheet itself
+// The spritesheet itself the idea is to have one spritesheet per batch
 type Spritesheet struct {
 	Path      string
 	Pic       pixel.Picture
@@ -100,13 +100,17 @@ func (s *Spritesheet) Init(spritesheetID int) (err error) {
 	return nil
 }
 
-// writes sprite to the spritesheet batch
-func (s *Spritesheet) WriteSprite(sprite, frame int) {
-	s.Sprites[sprite].Frames[frame].Draw(s.Batch, s.Sprites[sprite].Mat)
+func (s *Spritesheet) GetSprite(sprite uint) *Sprite {
+	return &(s.Sprites[sprite])
 }
 
-func (s *Spritesheet) SetMatrix(sprite int, mat pixel.Matrix) {
-	s.Sprites[sprite].Mat = mat
+// writes sprite to the spritesheet batch
+func (s *Sprite) DrawSprite(target pixel.Target, frame int) {
+	s.Frames[frame].Draw(target, s.Mat)
+}
+
+func (s *Sprite) UpdateMatrix(next pixel.Matrix) {
+	s.Mat = next // TODO try to use chain to add matrix
 }
 
 func loadPicture(path string) (pixel.Picture, error) {
