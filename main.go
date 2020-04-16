@@ -55,15 +55,15 @@ func run() {
 
 	win.Clear(colornames.Firebrick)
 
-	i := 0
 	fram := 0
 	second := time.Tick(time.Second)
 	// last := time.Now()
 
-	T_Spr := sh.GetSprite(0)
+	T_Spr1 := sh.GetSprite(0)
+	T_Spr2 := sh.GetSpriteCopy(0)
 
-	T_Spr.UpdateMatrix(pixel.IM.Moved(pixel.V(100, 100)))
-	// T_Spr.UpdateMatrix(pixel.IM.Scaled(win.Bounds().Center(), 9))
+	T_Spr1.SetMatrix(pixel.IM.Moved(pixel.V(100, 540)))
+	T_Spr2.SetMatrix(pixel.IM.Moved(pixel.V(1820, 540)))
 	// mat1 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(70, -150)))
 	// mat1 = mat1.Scaled(win.Bounds().Center(), 3)
 	// mat2 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(30, -150)))
@@ -73,18 +73,25 @@ func run() {
 	// mat4 := pixel.IM.Moved(win.Bounds().Center().Sub(pixel.V(-50, -150)))
 	// mat4 = mat4.Scaled(win.Bounds().Center(), 3)
 	// last := time.Now()
+
+	p1 := PhysicsObj{T_Spr1, pixel.V(2, 1)}
+	p2 := PhysicsObj{T_Spr2, pixel.V(-2, 0)}
+
 	for !win.Closed() {
 		// dt := time.Since(last).Seconds()
 
 		sh.Batch.Clear()
-		T_Spr.DrawSprite(sh.Batch, i)
+		T_Spr1.DrawSprite(sh.Batch, 0)
+		T_Spr2.DrawSprite(sh.Batch, 0)
+		CalcPhysics(&p1)
+		CalcPhysics(&p2)
+
 		// sh.SetMatrix(1, mat2)
 		// sh.WriteSprite(1, (i+8)%16)
 		// sh.SetMatrix(0, mat3)
 		// sh.WriteSprite(0, (i+4)%16)
 		// sh.SetMatrix(1, mat4)
 		// sh.WriteSprite(1, (i+10)%16)
-		i = (i + 1) % 16
 
 		win.Clear(colornames.Firebrick)
 		sh.Batch.Draw(win)

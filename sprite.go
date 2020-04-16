@@ -104,6 +104,11 @@ func (s *Spritesheet) GetSprite(sprite uint) *Sprite {
 	return &(s.Sprites[sprite])
 }
 
+func (s *Spritesheet) GetSpriteCopy(sprite uint) *Sprite {
+	spr := s.Sprites[sprite]
+	return &spr
+}
+
 // writes sprite to the spritesheet batch
 func (s *Sprite) DrawSprite(target pixel.Target, frame int) {
 	s.Frames[frame].Draw(target, s.Mat)
@@ -111,6 +116,15 @@ func (s *Sprite) DrawSprite(target pixel.Target, frame int) {
 
 func (s *Sprite) UpdateMatrix(next pixel.Matrix) {
 	s.Mat = s.Mat.Chained(next)
+}
+
+func (s *Sprite) SetMatrix(next pixel.Matrix) {
+	s.Mat = next
+}
+
+// Scale sprite matrix in place
+func (s *Sprite) Scale(scale float64) {
+	s.Mat = s.Mat.Scaled(s.Mat.Project(pixel.ZV), scale)
 }
 
 func loadPicture(path string) (pixel.Picture, error) {

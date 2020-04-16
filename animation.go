@@ -20,5 +20,6 @@ type Animation struct {
 }
 
 func (a *Animation) Init(spriteID uint) {
-
+	a.SpriteID = spriteID
+	a.Status = 0
 }
