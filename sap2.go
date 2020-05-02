@@ -1,9 +1,9 @@
 // ///////////////////////////////////////////////////////////////////
-// Filename: sap.go
-// Description: Sap with main estructure hoolding endpoints
+// Filename: sap2.go
+// Description: sap with boxes holding endpoints
 // Author: Mateo Rodriguez Ripolles (teorodrip@posteo.net)
 // Maintainer:
-// Created: Thu Apr 16 20:30:05 2020 (+0200)
+// Created: Sun May  3 01:18:37 2020 (+0200)
 // ///////////////////////////////////////////////////////////////////
 
 package main
@@ -11,9 +11,7 @@ package main
 // import "github.com/faiface/pixel"
 
 type EndPoint struct {
-	// First 2 bits are the EndPoint position inside the
-	// SapBox Points array, the rest are the Box position
-	// inside the global box array
+	// Position of the endpoint inside Endpoints array
 	Data  uint16
 	Value float64
 }
@@ -27,17 +25,19 @@ func (e EndPoint) Box() uint16 {
 	return e.Data >> 1
 }
 
+type Point struct {
+	X EndPoint
+	Y EndPoint
+}
+
 type SapBox struct {
-	// Array containing the 2 needed points to define a rectangle.
-	// The points are in form of indexes of the EnPoint slices
-	// in the sweep and prune structure, in this form:
-	// [X_min, Y_min, X_max, Y_max]
-	Points [4]uint
+	Max Point
+	Min Point
 }
 
 type SweepPrune struct {
-	EndPointsX []EndPoint
-	EndPointsY []EndPoint
+	EndPointsX []*EndPoint
+	EndPointsY []*EndPoint
 }
 
 // Perform insertion sort that is very efficient when only
