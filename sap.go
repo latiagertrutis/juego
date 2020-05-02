@@ -11,21 +11,28 @@ package main
 // import "github.com/faiface/pixel"
 
 type EndPoint struct {
+	// First 2 bits are the EndPoint position inside the
+	// SapBox Points array, the rest are the Box position
+	// inside the global box array
 	Data  uint16
 	Value float64
 }
 
-func (e EndPoint) isMin() bool {
-	return (e.Data & 0x1) == 0x1
+func (e EndPoint) IsMin() bool {
+	// It is a minimum if the position in Points array is 0 or 1
+	return (e.Data & 0x3) < 2
 }
 
-type SapAxis struct {
-	X, Y *EndPoint
+func (e EndPoint) Box() uint16 {
+	return e.Data >> 1
 }
 
-type Box struct {
-	Min SapAxis
-	Max SapAxis
+type SapBox struct {
+	// Array containing the 2 needed points to define a rectangle.
+	// The points are in form of indexes of the EnPoint slices
+	// in the sweep and prune structure, in this form:
+	// [X_min, Y_min, X_max, Y_max]
+	Points [4]uint
 }
 
 type SweepPrune struct {
@@ -33,6 +40,8 @@ type SweepPrune struct {
 	EndPointsY []EndPoint
 }
 
+// Perform insertion sort that is very efficient when only
+// few elements are unsorted
 func SortEndPoints(endpoints []EndPoint) {
 	var i int
 	var swapper EndPoint
@@ -42,7 +51,7 @@ func SortEndPoints(endpoints []EndPoint) {
 		i = j - 1
 		for i >= 0 && endpoints[i].Value > val {
 			swapper = endpoints[i]
-			if endpoint.isMin() && !swapper.isMin() {
+			if endpoint.IsMin() && !swapper.IsMin() {
 				// TODO check overlap and write to pair array
 			}
 		}
